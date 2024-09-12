@@ -1,0 +1,37 @@
+[
+  {
+    "name": "S_SUPPKEY",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "S_NAME",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "S_ADDRESS",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "S_CITY",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "S_NATION",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "S_REGION",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "S_PHONE",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

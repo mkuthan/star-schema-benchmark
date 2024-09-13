@@ -47,6 +47,12 @@ gcloud compute instances create $GCP_VM \
   --subnet=$GCP_PROJECT_SUBNET
 ```
 
+Or start instance if exists:
+
+```bash
+gcloud compute instances start $GCP_VM --zone=$GCP_PROJECT_ZONE
+```
+
 Check if you can connect to the VM:
 
 ```bash
@@ -66,6 +72,27 @@ Checkout the repository with data generator:
 
 ```bash
 git clone https://github.com/electrum/ssb-dbgen.git
+cd ssb-dbgen
+```
+
+Apply the patch to generate dates in YYYY-MM-DD format:
+
+```bash
+echo "
+diff --git a/dss.h b/dss.h
+index 8f78d89..dcbb750 100644
+--- a/dss.h
++++ b/dss.h
+@@ -517,7 +517,7 @@ int dbg_print(int dt, FILE *tgt, void *data, int len, int eol);
+
+ #ifdef SSBM
+ #define  PR_DATE(tgt, yr, mn, dy)      \
+-   sprintf(tgt, "19%02d%02d%02d", yr, mn, dy)
++   sprintf(tgt, "19%02d-%02d-%02d", yr, mn, dy)
+ #else
+ #ifdef MDY_DATE
+ #define  PR_DATE(tgt, yr, mn, dy)      \
+" | git apply
 ```
 
 Compile the generator:
@@ -121,13 +148,25 @@ Authenticate using your GCP account:
 gcloud auth login
 ```
 
-With 200MiB/s upload speed it takes ~90 seconds to upload 17.5GiB of data.
+With 200MiB/s network speed it takes ~90 seconds to upload 17.5GiB of data.
 
 ```bash
 gcloud storage cp *.tbl $GCP_BUCKET
 ```
 
 ## Load data into BigQuery
+
+The `customer` table:
+
+```shell
+bq load \
+  --source_format=CSV \
+  --ignore_unknown_values=true \
+  --field_delimiter="|" \
+  --schema=schemas/customer.json \
+  $GCP_DATASET.customer \
+  $GCP_BUCKET/customer.tbl
+```
 
 The `supplier` table:
 
@@ -141,15 +180,70 @@ bq load \
   $GCP_BUCKET/supplier.tbl
 ```
 
-TODO
+The `part` table:
+
+```shell
+bq load \
+  --source_format=CSV \
+  --ignore_unknown_values=true \
+  --field_delimiter="|" \
+  --schema=schemas/part.json \
+  $GCP_DATASET.part \
+  $GCP_BUCKET/part.tbl
+```
+
+The `lineorder` table:
+
+```shell
+bq load \
+  --source_format=CSV \
+  --ignore_unknown_values=true \
+  --field_delimiter="|" \
+  --schema=schemas/lineorder.json \
+  --time_partitioning_type=YEAR \
+  --time_partitioning_field=LO_ORDERDATE \
+  $GCP_DATASET.lineorder \
+  $GCP_BUCKET/lineorder.tbl
+```
+
+Check if the tables are loaded correctly:
+
+```shell
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "SELECT COUNT(*) FROM customer"
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "SELECT COUNT(*) FROM supplier"
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "SELECT COUNT(*) FROM part"
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "SELECT COUNT(*) FROM lineorder"
+```
 
 ## Flatten BigQuery tables
 
-TODO
+```shell
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "$(cat schemas/lineorder_flat.sql)"
+```
+
+Check if the table is flattened correctly:
+
+```shell
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "SELECT COUNT(*) FROM lineorder_flat"
+```
 
 ## Export flattened table to GCS as Parquet
 
-TODO
+Extract flattened table to GCS:
+
+```shell
+bq extract \
+  --destination_format=PARQUET \
+  --compression=SNAPPY \
+  $GCP_DATASET.lineorder_flat \
+  $GCP_BUCKET/lineorder_flat/\*.parquet
+```
+
+Check the export:
+    
+```shell
+gcloud storage ls -l $GCP_BUCKET/lineorder_flat/
+```
 
 ## Ingest Parquet files to Druid
 
@@ -161,6 +255,12 @@ Remove GCS with all the data:
 
 ```bash
 gcloud storage rm -r $GCP_BUCKET
+```
+
+Stop VM:
+
+```bash
+gcloud compute instances stop $GCP_VM --zone=europe-west1-b
 ```
 
 Remove VM:

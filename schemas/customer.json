@@ -1,0 +1,42 @@
+[
+  {
+    "name": "C_CUSTKEY",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "C_NAME",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "C_ADDRESS",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "C_CITY",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "C_NATION",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "C_REGION",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "C_PHONE",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "C_MKTSEGMENT",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

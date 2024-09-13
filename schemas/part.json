@@ -1,0 +1,47 @@
+[
+  {
+    "name": "P_PARTKEY",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "P_NAME",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "P_MFGR",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "P_CATEGORY",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "P_BRAND",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "P_COLOR",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "P_TYPE",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "P_SIZE",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "P_CONTAINER",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

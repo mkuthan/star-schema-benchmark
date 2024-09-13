@@ -1,0 +1,87 @@
+[
+  {
+    "name": "LO_ORDERKEY",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_LINENUMBER",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_CUSTKEY",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_PARTKEY",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_SUPPKEY",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_ORDERDATE",
+    "type": "DATE",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_ORDERPRIORITY",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_SHIPPRIORITY",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_QUANTITY",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_EXTENDEDPRICE",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_ORDTOTALPRICE",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_DISCOUNT",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_REVENUE",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_SUPPLYCOST",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_TAX",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_COMMITDATE",
+    "type": "DATE",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "LO_SHIPMODE",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

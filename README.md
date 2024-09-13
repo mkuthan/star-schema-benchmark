@@ -44,13 +44,15 @@ export DRUID_DATASOURCE=
 Create GCS bucket:
 
 ```bash
-gcloud storage buckets create $GCP_BUCKET --location=europe-west1 --default-storage-class=STANDARD --uniform-bucket-level-access
+gcloud storage buckets create $GCP_BUCKET \
+  --location=europe-west1 --default-storage-class=STANDARD --uniform-bucket-level-access
 ```
 
 Add permissions to the bucket for Druid ingestion service account:
 
 ```bash
-gcloud storage buckets add-iam-policy-binding $GCP_BUCKET --member=$GCP_DRUID_SA --role=roles/storage.objectViewer
+gcloud storage buckets add-iam-policy-binding $GCP_BUCKET \
+  --member=$GCP_DRUID_SA --role=roles/storage.objectViewer
 ```
 
 Create BigQuery dataset:
@@ -232,10 +234,14 @@ bq load \
 Check if the tables are loaded correctly:
 
 ```shell
-bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "SELECT COUNT(*) FROM customer"
-bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "SELECT COUNT(*) FROM supplier"
-bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "SELECT COUNT(*) FROM part"
-bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "SELECT COUNT(*) FROM lineorder"
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false \
+  "SELECT COUNT(*) FROM customer"
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false \
+  "SELECT COUNT(*) FROM supplier"
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false \
+  "SELECT COUNT(*) FROM part"
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false \
+  "SELECT COUNT(*) FROM lineorder"
 ```
 
 ## Flatten BigQuery tables
@@ -247,7 +253,8 @@ bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "$(cat schemas/lineord
 Check if the table is flattened correctly:
 
 ```shell
-bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false "SELECT COUNT(*) FROM lineorder_flat"
+bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false \
+  "SELECT COUNT(*) FROM lineorder_flat"
 ```
 
 ## Export flattened table to GCS as Parquet

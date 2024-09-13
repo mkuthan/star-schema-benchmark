@@ -1,0 +1,136 @@
+{
+  "type": "index_parallel",
+  "spec": {
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "s3",
+        "prefixes": [
+          "${DRUID_INPUT}"
+        ],
+        "properties": {
+          "accessKeyId": "${GCP_DRUID_HMAC_KEY}",
+          "secretAccessKey": "${GCP_DRUID_HMAC_SECRET}"
+        },
+        "endpointConfig": {
+          "url": "https://storage.googleapis.com"
+        }
+      },
+      "inputFormat": {
+        "type": "parquet"
+      }
+    },
+    "tuningConfig": {
+      "type": "index_parallel",
+      "partitionsSpec": {
+        "type": "hashed"
+      },
+      "maxNumConcurrentSubTasks": 50,
+      "forceGuaranteedRollup": true
+    },
+    "dataSchema": {
+      "dataSource": "${DRUID_DATASOURCE}",
+      "timestampSpec": {
+        "column": "LO_ORDERDATE",
+        "format": "auto"
+      },
+      "granularitySpec": {
+        "queryGranularity": "none",
+        "rollup": true,
+        "segmentGranularity": "year"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          {
+            "type": "long",
+            "name": "LO_ORDERKEY"
+          },
+          {
+            "type": "long",
+            "name": "LO_LINENUMBER"
+          },
+          {
+            "type": "long",
+            "name": "LO_CUSTKEY"
+          },
+          {
+            "type": "long",
+            "name": "LO_PARTKEY"
+          },
+          {
+            "type": "long",
+            "name": "LO_SUPPKEY"
+          },
+          "LO_ORDERPRIORITY",
+          {
+            "type": "long",
+            "name": "LO_SHIPPRIORITY"
+          },
+          "LO_COMMITDATE",
+          "LO_SHIPMODE",
+          "C_NAME",
+          "C_ADDRESS",
+          "C_CITY",
+          "C_NATION",
+          "C_REGION",
+          "C_PHONE",
+          "C_MKTSEGMENT",
+          "S_NAME",
+          "S_ADDRESS",
+          "S_CITY",
+          "S_NATION",
+          "S_REGION",
+          "S_PHONE",
+          "P_NAME",
+          "P_MFGR",
+          "P_CATEGORY",
+          "P_BRAND",
+          "P_COLOR",
+          "P_TYPE",
+          {
+            "type": "long",
+            "name": "P_SIZE"
+          },
+          "P_CONTAINER"
+        ]
+      },
+      "metricsSpec": [
+        {
+          "type": "longSum",
+          "name": "LO_QUANTITY",
+          "fieldName": "LO_QUANTITY"
+        },
+        {
+          "type": "longSum",
+          "name": "LO_EXTENDEDPRICE",
+          "fieldName": "LO_EXTENDEDPRICE"
+        },
+        {
+          "type": "longSum",
+          "name": "LO_ORDTOTALPRICE",
+          "fieldName": "LO_ORDTOTALPRICE"
+        },
+        {
+          "type": "longSum",
+          "name": "LO_DISCOUNT",
+          "fieldName": "LO_DISCOUNT"
+        },
+        {
+          "type": "longSum",
+          "name": "LO_REVENUE",
+          "fieldName": "LO_REVENUE"
+        },
+        {
+          "type": "longSum",
+          "name": "LO_SUPPLYCOST",
+          "fieldName": "LO_SUPPLYCOST"
+        },
+        {
+          "type": "longSum",
+          "name": "LO_TAX",
+          "fieldName": "LO_TAX"
+        }
+      ]
+    }
+  }
+}

@@ -1,4 +1,4 @@
-# star-schema-benchmark
+# Star Schema Benchmark
 
 Star Schema Benchmark for BigQuery and Apache Druid
 This repository contains the scripts to generate the data for the Star Schema Benchmark
@@ -14,6 +14,28 @@ graph TD
   C --> D[Flatten BigQuery tables]
   D --> E[Export flattened table to GCS as Parquet]
   E --> F[Ingest Parquet files to Druid]
+```
+
+## Configure sensitive data
+
+Use `direnv` and `.envrc` file to store sensitive data:
+
+```bash
+export GCP_PROJECT_ZONE=
+export GCP_PROJECT_SUBNET=
+
+export GCP_BUCKET=
+export GCP_VM=
+export GCP_DATASET=
+export GCP_DRUID_SA=
+export GCP_DRUID_HMAC_KEY=
+export GCP_DRUID_HMAC_SECRET=
+
+export DRUID_ROUTER_URL=
+export DRUID_USER=
+export DRUID_PASSWORD=
+export DRUID_INPUT=
+export DRUID_DATASOURCE=
 ```
 
 ## Setup GCP resources
@@ -239,7 +261,7 @@ bq extract \
   $GCP_BUCKET/lineorder_flat/\*.parquet
 ```
 
-Check the export:
+Check the export, for 180mln records it should be ~19GiB:
     
 ```shell
 gcloud storage ls -l $GCP_BUCKET/lineorder_flat/
@@ -247,15 +269,34 @@ gcloud storage ls -l $GCP_BUCKET/lineorder_flat/
 
 ## Ingest Parquet files to Druid
 
-TODO
+Don't allow Druid to drop data just after the ingestion due to default cluster policy:
 
-## Cleanup
+```shell
+curl --location --request POST "$DRUID_ROUTER_URL/druid/coordinator/v1/rules/$DRUID_DATASOURCE" \
+  --header 'Content-Type: application/json' \
+  --user "$DRUID_USER:$DRUID_PASSWORD" \
+  --data-raw '[{"type": "loadForever"}]'
+```
 
-Remove GCS with all the data:
+Start Druid native ingestion process, for 180mln records it takes ~40 minutes:
 
 ```bash
-gcloud storage rm -r $GCP_BUCKET
+envsubst < ingestion/0_baseline.json | \
+curl "$DRUID_ROUTER_URL/druid/indexer/v1/task" \
+  --header 'Content-Type: application/json' \
+  --user "$DRUID_USER:$DRUID_PASSWORD" \
+  --data-binary "@-"
 ```
+
+After ingestion Druid router shows the datasource:
+
+![Druid datasource](images/druid_datasource.png)
+
+## Run queries
+
+TODO: Run queries for BigQuery and Druid and collect the benchmark results.
+
+## Cleanup
 
 Stop VM:
 

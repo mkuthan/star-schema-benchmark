@@ -1,0 +1,10 @@
+SELECT
+    C_NATION,
+    S_NATION,
+    EXTRACT(YEAR FROM __time) AS "year",
+    SUM(LO_REVENUE) AS revenue
+FROM "star_schema_benchmark"
+WHERE C_REGION = 'ASIA' AND S_REGION = 'ASIA'
+  AND EXTRACT(YEAR FROM __time) >= 1992 AND EXTRACT(YEAR FROM __time) <= 1997
+GROUP BY C_NATION, S_NATION, 3
+ORDER BY 3 ASC, revenue DESC

@@ -1,0 +1,8 @@
+SELECT
+    SUM(LO_REVENUE),
+    EXTRACT(YEAR FROM __time) AS "year",
+    P_BRAND
+FROM "star_schema_benchmark"
+WHERE P_CATEGORY = 'MFGR#12' AND S_REGION = 'AMERICA'
+GROUP BY 2, P_BRAND
+ORDER BY 2, P_BRAND

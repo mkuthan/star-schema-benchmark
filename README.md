@@ -1,10 +1,11 @@
 # Star Schema Benchmark
 
-Star Schema Benchmark for BigQuery and Apache Druid
-This repository contains the scripts to generate the data for the Star Schema Benchmark
-and the queries to run on BigQuery and Apache Druid.
+Star Schema Benchmark for BigQuery and Apache Druid.
 
-Benchmark preparation steps:
+This repository contains the scripts to generate the data for the [Star Schema Benchmark](https://www.cs.umb.edu/~poneil/StarSchemaB.PDF)
+and run the benchmark queries on BigQuery and Apache Druid.
+
+Overview of benchmark preparation steps:
 
 ```mermaid
 graph TD

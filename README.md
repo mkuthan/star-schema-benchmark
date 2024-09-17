@@ -302,7 +302,11 @@ After ingestion Druid router shows the datasource:
 
 ## Run queries
 
-TODO: Run queries for BigQuery and Druid and collect the benchmark results.
+Run simulations for BigQuery and Druid:
+
+```bash
+sbt gatling:test
+```
 
 ## Cleanup
 

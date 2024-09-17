@@ -22,6 +22,7 @@ graph TD
 Use `direnv` and `.envrc` file to store sensitive data:
 
 ```bash
+export GCP_PROJECT=
 export GCP_PROJECT_ZONE=
 export GCP_PROJECT_SUBNET=
 
@@ -33,6 +34,7 @@ export GCP_DRUID_HMAC_KEY=
 export GCP_DRUID_HMAC_SECRET=
 
 export DRUID_ROUTER_URL=
+export DRUID_BROKER_URL
 export DRUID_USER=
 export DRUID_PASSWORD=
 export DRUID_INPUT=

@@ -16,28 +16,32 @@ class BigQuerySimulation extends Simulation {
 
   private val query = scenario("BigQuery")
     .foreach(FileUtils.files("src/test/resources/bigquery"), "data")(
-      exec(
-        http("#{data(0)}")
-          .post(s"/bigquery/v2/projects/$gcpProject/queries")
-          .body(StringBody(
-            s"""
-               |{
-               |    "query": #{data(1).jsonStringify()},
-               |    "defaultDataset": {
-               |        "datasetId": "$gcpDataset"
-               |    },
-               |    "useLegacySql": false,
-               |    "useQueryCache": false
-               |}
-               |""".stripMargin)
-          )
-          .check(jsonPath("$.jobReference.jobId").saveAs("jobId"))
-      ).doWhile(session => session("jobComplete").asOption[String].getOrElse("false") != "true")(
+      group("#{data(0)}")(
         exec(
-          http("Job Status")
-            .get(s"/bigquery/v2/projects/$gcpProject/queries/#{jobId}")
-            .check(jsonPath("$.jobComplete").saveAs("jobComplete"))
-        ).pause(100.millis)
+          http("Start Job")
+            .post(s"/bigquery/v2/projects/$gcpProject/queries")
+            .body(StringBody(
+              s"""
+                 |{
+                 |    "query": #{data(1).jsonStringify()},
+                 |    "defaultDataset": {
+                 |        "datasetId": "$gcpDataset"
+                 |    },
+                 |    "useLegacySql": false,
+                 |    "useQueryCache": false
+                 |}
+                 |""".stripMargin)
+            )
+            .check(jsonPath("$.jobReference.jobId").saveAs("jobId"))
+        ).group("Await Job Results")(
+          doWhile(session => session("jobComplete").asOption[String].getOrElse("false") != "true")(
+            exec(
+              http("Check Job Status")
+                .get(s"/bigquery/v2/projects/$gcpProject/queries/#{jobId}")
+                .check(jsonPath("$.jobComplete").saveAs("jobComplete"))
+            ).pause(100.millis)
+          )
+        )
       )
     )
 

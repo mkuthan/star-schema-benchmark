@@ -14,11 +14,11 @@ class BigQuerySimulation extends Simulation {
     .header("Content-Type", "application/json")
     .authorizationHeader(s"Bearer ${AuthUtils.getAccessToken}")
 
-  private val query = scenario("BigQuery")
+  private val regularQuery = scenario("BigQuery Regular Queries")
     .foreach(FileUtils.files("src/test/resources/bigquery"), "data")(
       group("#{data(0)}")(
         exec(
-          http("Start Job")
+          http("Regular Query")
             .post(s"/bigquery/v2/projects/$gcpProject/queries")
             .body(StringBody(
               s"""
@@ -32,20 +32,54 @@ class BigQuerySimulation extends Simulation {
                  |}
                  |""".stripMargin)
             )
-            .check(jsonPath("$.jobReference.jobId").saveAs("jobId"))
+            .check(jmesPath("jobReference.jobId").saveAs("jobId")),
         ).group("Await Job Results")(
           doWhile(session => session("jobComplete").asOption[String].getOrElse("false") != "true")(
             exec(
               http("Check Job Status")
                 .get(s"/bigquery/v2/projects/$gcpProject/queries/#{jobId}")
-                .check(jsonPath("$.jobComplete").saveAs("jobComplete"))
+                .check(jmesPath("jobComplete").saveAs("jobComplete"))
             ).pause(100.millis)
           )
         )
       )
     )
 
+  private val shortQuery = scenario("BigQuery Short Queries")
+    .foreach(FileUtils.files("src/test/resources/bigquery"), "data")(
+      group("#{data(0)}")(
+        exec(
+          http("Short Query")
+            .post(s"/bigquery/v2/projects/$gcpProject/queries")
+            .body(StringBody(
+              s"""
+                 |{
+                 |    "query": #{data(1).jsonStringify()},
+                 |    "defaultDataset": {
+                 |        "datasetId": "$gcpDataset"
+                 |    },
+                 |    "useLegacySql": false,
+                 |    "useQueryCache": false,
+                 |    "jobCreationMode": "JOB_CREATION_OPTIONAL"
+                 |}
+                 |""".stripMargin)
+            )
+            .check(jmesPath("jobReference.jobId").optional.saveAs("jobId"))
+        ).group("Await Job Results")(
+          doIf("#{jobId.exists()}") {
+            doWhile(session => session("jobComplete").asOption[String].getOrElse("false") != "true")(
+              exec(
+                http("Check Job Status")
+                  .get(s"/bigquery/v2/projects/$gcpProject/queries/#{jobId}")
+                  .check(jmesPath("jobComplete").saveAs("jobComplete"))
+              ).pause(100.millis)
+            )
+          }
+        )
+      )
+    )
+
   setUp(
-    query.inject(atOnceUsers(1))
+    regularQuery.inject(atOnceUsers(1)).andThen(shortQuery.inject(atOnceUsers(1)))
   ).protocols(httpProtocol)
 }

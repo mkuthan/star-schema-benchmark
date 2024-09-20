@@ -4,7 +4,6 @@ import scala.concurrent.duration._
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import io.gatling.http.Predef.http
 
 class BigQuerySimulation extends Simulation {
   private val gcpProject = sys.env("GCP_PROJECT")

@@ -32,12 +32,12 @@ class BigQuerySimulation extends Simulation {
                  |}
                  |""".stripMargin)
             )
-            .check(jmesPath("jobReference.jobId").saveAs("regularJobId")),
+            .check(jmesPath("jobReference.jobId").saveAs("jobId")),
         ).group("Await Job Results")(
           doWhile(session => session("jobComplete").asOption[String].getOrElse("false") != "true")(
             exec(
               http("Check Job Status")
-                .get(s"/bigquery/v2/projects/$gcpProject/queries/#{regularJobId}")
+                .get(s"/bigquery/v2/projects/$gcpProject/queries/#{jobId}")
                 .check(jmesPath("jobComplete").saveAs("jobComplete"))
             ).pause(100.millis)
           )
@@ -64,13 +64,13 @@ class BigQuerySimulation extends Simulation {
                  |}
                  |""".stripMargin)
             )
-            .check(jmesPath("jobReference.jobId").optional.saveAs("shortJobId"))
+            .check(jmesPath("jobReference.jobId").optional.saveAs("jobId"))
         ).group("Await Job Results")(
-          doIf("#{shortJobId.exists()}") {
+          doIf("#{jobId.exists()}") {
             doWhile(session => session("jobComplete").asOption[String].getOrElse("false") != "true")(
               exec(
                 http("Check Job Status")
-                  .get(s"/bigquery/v2/projects/$gcpProject/queries/#{regularJobId}")
+                  .get(s"/bigquery/v2/projects/$gcpProject/queries/#{jobId}")
                   .check(jmesPath("jobComplete").saveAs("jobComplete"))
               ).pause(100.millis)
             )

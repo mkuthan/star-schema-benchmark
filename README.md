@@ -69,7 +69,7 @@ To speed-up data loading to GCS create VM in the same region as the GCS bucket:
 gcloud compute instances create $GCP_VM \
   --zone=$GCP_PROJECT_ZONE \
   --machine-type=n4-standard-2 \
-  --boot-disk-size=200GB \
+  --boot-disk-size=500GB \
   --no-address \
   --subnet=$GCP_PROJECT_SUBNET
 ```

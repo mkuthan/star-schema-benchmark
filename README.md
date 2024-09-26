@@ -167,6 +167,24 @@ Check the results `wc -l *.tbl`:
 181958372 total
 ```
 
+Scenario for ~300GB of data:
+
+```bash
+./dbgen -f -s 300 -T l
+./dbgen -f -s 300 -T c
+./dbgen -f -s 300 -T p
+./dbgen -f -s 300 -T s
+```
+
+Check the results `ls -lh  *.tbl` (`wc` is too slow:
+
+```bash
+831M customer.tbl
+186G lineorder.tbl
+149M part.tbl
+50M  supplier.tbl
+```
+
 ## Upload data to GCS
 
 Authenticate using your GCP account:
@@ -175,13 +193,19 @@ Authenticate using your GCP account:
 gcloud auth login
 ```
 
-With 200MiB/s network speed it takes ~90 seconds to upload 17.5GiB of data.
+With 200MiB/s network speed it takes ~90 seconds to upload 17.5GiB and ~15 minutes to upload 187GiB.
 
 ```bash
 gcloud storage cp *.tbl $GCP_BUCKET
 ```
 
 ## Load data into BigQuery
+
+Create dataset:
+
+```shell
+bq mk --data_location=EU $GCP_DATASET
+```
 
 The `customer` table:
 

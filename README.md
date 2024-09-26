@@ -295,7 +295,7 @@ bq extract \
   $GCP_BUCKET/lineorder_flat/\*.parquet
 ```
 
-Check the export, for 180mln records it should be ~19GiB:
+Check the export, for 180mln records it should be ~19GiB, for 1.8bln records it should be ~220GiB:
     
 ```shell
 gcloud storage ls -l $GCP_BUCKET/lineorder_flat/
@@ -312,9 +312,9 @@ curl --location --request POST "$DRUID_ROUTER_URL/druid/coordinator/v1/rules/$DR
   --data-raw '[{"type": "loadForever"}]'
 ```
 
-Start Druid native ingestion process, for 180mln records it takes ~40 minutes:
+Start Druid native ingestion process, for 180mln records it takes ~40 minutes, for 1.8bln records it takes ~3 hours.
 
-```bash
+```shell
 envsubst < ingestion/0_baseline.json | \
 curl "$DRUID_ROUTER_URL/druid/indexer/v1/task" \
   --header 'Content-Type: application/json' \

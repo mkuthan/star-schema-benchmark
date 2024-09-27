@@ -6,7 +6,7 @@
       "inputSource": {
         "type": "s3",
         "prefixes": [
-          "${DRUID_INPUT}"
+          "${DRUID_INPUT}/${YEAR}/"
         ],
         "properties": {
           "accessKeyId": "${GCP_DRUID_HMAC_KEY}",
@@ -25,8 +25,13 @@
       "partitionsSpec": {
         "type": "hashed"
       },
-      "maxNumConcurrentSubTasks": 50,
-      "forceGuaranteedRollup": true
+      "maxNumConcurrentSubTasks": 20,
+      "forceGuaranteedRollup": true,
+      "totalNumMergeTasks": 20,
+      "splitHintSpec": {
+        "type": "maxSize",
+        "maxSplitSize": "2GiB"
+      }
     },
     "dataSchema": {
       "dataSource": "${DRUID_DATASOURCE}",

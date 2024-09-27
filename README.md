@@ -288,17 +288,20 @@ bq --dataset_id=$GCP_DATASET query --use_legacy_sql=false \
 Extract flattened table to GCS:
 
 ```shell
-bq extract \
-  --destination_format=PARQUET \
-  --compression=SNAPPY \
-  $GCP_DATASET.lineorder_flat \
-  $GCP_BUCKET/lineorder_flat/\*.parquet
+YEARS=(1992 1993 1994 1995 1996 1997 1998)
+for YEAR in ${YEARS[@]}; do
+  bq extract \
+    --destination_format=PARQUET \
+    --compression=SNAPPY \
+    $GCP_DATASET.lineorder_flat\$$YEAR \
+    $GCP_BUCKET/lineorder_flat/$YEAR/\*.parquet
+done
 ```
 
 Check the export, for 180mln records it should be ~19GiB, for 1.8bln records it should be ~220GiB:
     
 ```shell
-gcloud storage ls -l $GCP_BUCKET/lineorder_flat/
+gcloud storage du -s -r $GCP_BUCKET/lineorder_flat
 ```
 
 ## Ingest Parquet files to Druid
@@ -312,14 +315,18 @@ curl --location --request POST "$DRUID_ROUTER_URL/druid/coordinator/v1/rules/$DR
   --data-raw '[{"type": "loadForever"}]'
 ```
 
-Start Druid native ingestion process, for 180mln records it takes ~40 minutes, for 1.8bln records it takes ~3 hours.
+Start Druid native ingestion process, it could take a few hours to ingest data.
 
 ```shell
-envsubst < ingestion/0_baseline.json | \
-curl "$DRUID_ROUTER_URL/druid/indexer/v1/task" \
-  --header 'Content-Type: application/json' \
-  --user "$DRUID_USER:$DRUID_PASSWORD" \
-  --data-binary "@-"
+YEARS=(1992 1993 1994 1995 1996 1997 1998)
+for YEAR in ${YEARS[@]}; do
+    export YEAR
+    envsubst < ingestion/0_baseline.json | \
+    curl "$DRUID_ROUTER_URL/druid/indexer/v1/task" \
+      --header 'Content-Type: application/json' \
+      --user "$DRUID_USER:$DRUID_PASSWORD" \
+      --data-binary "@-"
+done
 ```
 
 After ingestion Druid router shows the datasource:

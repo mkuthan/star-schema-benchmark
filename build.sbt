@@ -1,7 +1,7 @@
-enablePlugins(GatlingPlugin)
+enablePlugins(JmhPlugin)
 
 name := "star-schema-benchmark"
-scalaVersion := "2.13.10"
+scalaVersion := "2.13.15"
 
 scalacOptions := Seq(
   "-encoding", "UTF-8",
@@ -15,7 +15,11 @@ scalacOptions := Seq(
 )
 
 libraryDependencies ++= Seq(
-  "io.gatling" % "gatling-test-framework" % "3.11.5" % Test,
-  "io.gatling.highcharts" % "gatling-charts-highcharts" % "3.11.5" % Test,
-  "com.google.auth" % "google-auth-library-oauth2-http" % "1.23.0" % Test
+  // druid client dependencies
+  "com.softwaremill.sttp.client3" %% "circe" % "3.9.8",
+  "com.softwaremill.sttp.client3" %% "core" % "3.9.8",
+  "io.circe" %% "circe-core" % "0.14.9",
+  "io.circe" %% "circe-generic" % "0.14.9",
+  // bigquery client dependencies
+  "com.google.cloud" % "google-cloud-bigquery" % "2.42.4"
 )

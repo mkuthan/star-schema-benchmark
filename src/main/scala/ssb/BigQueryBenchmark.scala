@@ -12,7 +12,7 @@ object BigQueryBenchmark {
 
   def query(scenarioName: String): String = {
     val statement = FileUtils.content(s"src/main/resources/bigquery/$scenarioName.sql")
-    BigQueryClient.query(statement, dataset)
+    BigQueryClient.query(scenarioName, statement, dataset)
   }
 }
 

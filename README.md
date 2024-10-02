@@ -335,11 +335,31 @@ After ingestion Druid router shows the datasource:
 
 ## Run queries
 
-Run simulations for BigQuery and Druid:
+Run all benchmarks:
 
 ```bash
-sbt gatling:test
+sbt jmh:run
 ```
+
+Run Druid benchmark:
+
+```bash
+sbt 'jmh:run ssb.DruidBenchmark'
+```
+
+Run BigQuery benchmark:
+
+```bash
+sbt 'jmh:run ssb.BigQueryBenchmark'
+```
+
+Run BigQuery benchmark using short queries:
+
+```bash
+export QUERY_PREVIEW_ENABLED=true
+sbt 'jmh:run ssb.BigQueryBenchmark'
+```
+
 
 ## Cleanup
 

@@ -7,7 +7,13 @@ import sttp.client3.circe._
 
 object DruidClient {
 
-  private case class DruidRequest(query: String, useCache: Boolean, populateCache: Boolean)
+  private case class DruidRequest(
+      query: String,
+      useCache: Boolean,
+      populateCache: Boolean,
+      useResultLevelCache: Boolean,
+      populateResultLevelCache: Boolean
+  )
 
   private val backend = HttpClientSyncBackend()
 
@@ -19,7 +25,9 @@ object DruidClient {
     val druidRequest = DruidRequest(
       query = statement.replace("__DRUID_DATASOURCE__", datasource),
       useCache = false,
-      populateCache = false
+      populateCache = false,
+      useResultLevelCache = false,
+      populateResultLevelCache = false
     )
 
     val httpRequest = basicRequest

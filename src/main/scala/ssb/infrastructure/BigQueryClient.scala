@@ -1,5 +1,6 @@
 package ssb.infrastructure
 
+import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import com.google.cloud.bigquery.BigQueryOptions
@@ -8,10 +9,11 @@ import com.google.cloud.bigquery.QueryJobConfiguration
 object BigQueryClient {
   private val service = BigQueryOptions.getDefaultInstance.getService
 
-  def query(statement: String, dataset: String): String = {
+  def query(scenarioName: String, statement: String, dataset: String): String = {
     val queryJobConfiguration = QueryJobConfiguration
       .newBuilder(statement)
       .setDefaultDataset(dataset)
+      .setLabels(Map("star-schema-benchmark" -> scenarioName).asJava)
       .setUseLegacySql(false)
       .setUseQueryCache(false)
       .build()

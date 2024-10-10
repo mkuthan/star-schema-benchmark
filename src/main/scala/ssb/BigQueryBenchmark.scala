@@ -1,5 +1,6 @@
 package ssb
 
+import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.BenchmarkMode
 import org.openjdk.jmh.annotations.Fork
 import org.openjdk.jmh.annotations.Measurement
@@ -22,4 +23,8 @@ object BigQueryBenchmark {
 @Fork(1)
 class BigQueryBenchmark extends AbstractBenchmark {
   protected def query(scenarioName: String): String = BigQueryBenchmark.query(scenarioName)
+
+  @Benchmark
+  def b3_1_joins(): String = query("3_1_joins")
+
 }

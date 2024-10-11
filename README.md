@@ -26,6 +26,8 @@ export GCP_PROJECT=
 export GCP_PROJECT_ZONE=
 export GCP_PROJECT_SUBNET=
 
+export GCP_QUERY_PROJECT=
+
 export GCP_BUCKET=
 export GCP_VM=
 export GCP_DATASET=
@@ -344,22 +346,23 @@ sbt jmh:run
 Run Druid benchmark:
 
 ```bash
-sbt 'jmh:run ssb.DruidBenchmark'
+sbt 'jmh:run ssb.DruidSerialBenchmark'
+sbt 'jmh:run ssb.DruidConcurrentBenchmark'
 ```
 
 Run BigQuery benchmark:
 
 ```bash
-sbt 'jmh:run ssb.BigQueryBenchmark'
+sbt 'jmh:run ssb.BigQuerySerialBenchmark'
+sbt 'jmh:run ssb.BigQueryConcurrentBenchmark'
 ```
 
 Run BigQuery benchmark using short queries:
 
 ```bash
 export QUERY_PREVIEW_ENABLED=true
-sbt 'jmh:run ssb.BigQueryBenchmark'
+sbt 'jmh:run ssb.BigQuerySerialBenchmark'
 ```
-
 
 ## Cleanup
 

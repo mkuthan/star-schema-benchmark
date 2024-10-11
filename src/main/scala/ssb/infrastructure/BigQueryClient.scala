@@ -4,21 +4,28 @@ import scala.jdk.CollectionConverters._
 import scala.util.control.NonFatal
 
 import com.google.cloud.bigquery.BigQueryOptions
+import com.google.cloud.bigquery.DatasetId
 import com.google.cloud.bigquery.QueryJobConfiguration
 
 object BigQueryClient {
-  private val service = BigQueryOptions.getDefaultInstance.getService
+  private val queryProject = sys.env("GCP_QUERY_PROJECT")
 
-  def query(scenarioName: String, statement: String, dataset: String): String = {
+  private val bqOptions = BigQueryOptions
+    .newBuilder()
+    .setProjectId(queryProject)
+    .build()
+
+  def query(statement: String, project: String, dataset: String, labels: Map[String, String]): String = {
     val queryJobConfiguration = QueryJobConfiguration
       .newBuilder(statement)
-      .setDefaultDataset(dataset)
-      .setLabels(Map("star-schema-benchmark" -> scenarioName).asJava)
+      .setDefaultDataset(DatasetId.of(project, dataset))
+      .setLabels(labels.asJava)
       .setUseLegacySql(false)
       .setUseQueryCache(false)
       .build()
 
     try {
+      val service = bqOptions.getService
       val response = service.query(queryJobConfiguration)
       val results = response.getValues.toString
       println(results)

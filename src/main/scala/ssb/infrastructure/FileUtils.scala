@@ -1,4 +1,4 @@
-package ssb
+package ssb.infrastructure
 
 import scala.io.Source
 

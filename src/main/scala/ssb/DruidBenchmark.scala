@@ -1,11 +1,9 @@
 package ssb
 
-import org.openjdk.jmh.annotations.BenchmarkMode
-import org.openjdk.jmh.annotations.Fork
-import org.openjdk.jmh.annotations.Measurement
-import org.openjdk.jmh.annotations.Mode
-import org.openjdk.jmh.annotations.Warmup
+import scala.annotation.unused
+
 import ssb.infrastructure.DruidClient
+import ssb.infrastructure.FileUtils
 
 object DruidBenchmark {
   private val datasource = sys.env("DRUID_DATASOURCE")
@@ -16,10 +14,12 @@ object DruidBenchmark {
   }
 }
 
-@BenchmarkMode(Array(Mode.SingleShotTime))
-@Warmup(iterations = 0)
-@Measurement(iterations = 5)
-@Fork(1)
-class DruidBenchmark extends AbstractBenchmark {
-  protected def query(scenarioName: String): String = DruidBenchmark.query(scenarioName)
+trait DruidBenchmark {
+  def query(scenarioName: String): String = DruidBenchmark.query(scenarioName)
 }
+
+@unused
+class DruidSerialBenchmark extends SerialBenchmark with DruidBenchmark
+
+@unused
+class DruidConcurrentBenchmark extends ConcurrentBenchmark with DruidBenchmark

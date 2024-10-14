@@ -343,18 +343,33 @@ Run all benchmarks:
 sbt jmh:run
 ```
 
-Run Druid benchmark:
+### Druid
+
+Run Druid benchmarks:
 
 ```bash
 sbt 'jmh:run ssb.DruidSerialBenchmark'
 sbt 'jmh:run ssb.DruidConcurrentBenchmark'
 ```
 
-Run BigQuery benchmark:
+Run Druid supplement benchmarks:
+
+```bash
+sbt 'jmh:run ssb.DruidCountDistinctBenchmark'
+```
+
+### BigQuery
+
+Run BigQuery benchmarks:
 
 ```bash
 sbt 'jmh:run ssb.BigQuerySerialBenchmark'
 sbt 'jmh:run ssb.BigQueryConcurrentBenchmark'
+```
+
+Run BigQuery supplement benchmarks:
+
+```bash
 sbt 'jmh:run ssb.BigQueryJoinsBenchmark'
 sbt 'jmh:run ssb.BigQueryCountDistinctBenchmark'
 ```

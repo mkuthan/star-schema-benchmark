@@ -355,13 +355,15 @@ Run BigQuery benchmark:
 ```bash
 sbt 'jmh:run ssb.BigQuerySerialBenchmark'
 sbt 'jmh:run ssb.BigQueryConcurrentBenchmark'
+sbt 'jmh:run ssb.BigQueryJoinsBenchmark'
+sbt 'jmh:run ssb.BigQueryCountDistinctBenchmark'
 ```
 
 Run BigQuery benchmark using short queries:
 
 ```bash
 export QUERY_PREVIEW_ENABLED=true
-sbt 'jmh:run ssb.BigQuerySerialBenchmark'
+sbt ...
 ```
 
 ## Cleanup

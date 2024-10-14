@@ -37,9 +37,33 @@ class BigQueryConcurrentBenchmark extends ConcurrentBenchmark with BigQueryBench
 
 @BenchmarkMode(Array(Mode.SingleShotTime))
 @Warmup(iterations = 0)
-@Measurement(iterations = 5)
+@Measurement(iterations = 1)
 @Fork(1)
 class BigQueryJoinsBenchmark {
   @Benchmark
+  def b2_1_joins(): String = BigQueryBenchmark.query("2_1_joins")
+
+  @Benchmark
   def b3_1_joins(): String = BigQueryBenchmark.query("3_1_joins")
+
+  @Benchmark
+  def b4_1_joins(): String = BigQueryBenchmark.query("4_1_joins")
+}
+
+@BenchmarkMode(Array(Mode.SingleShotTime))
+@Warmup(iterations = 0)
+@Measurement(iterations = 1)
+@Fork(1)
+class BigQueryCountDistinctBenchmark {
+  @Benchmark
+  def b3_1_count_distinct(): String = BigQueryBenchmark.query("3_1_count_distinct")
+
+  @Benchmark
+  def b3_1_count_distinct_approx(): String = BigQueryBenchmark.query("3_1_count_distinct_approx")
+
+  @Benchmark
+  def b3_4_count_distinct(): String = BigQueryBenchmark.query("3_4_count_distinct")
+
+  @Benchmark
+  def b3_4_count_distinct_approx(): String = BigQueryBenchmark.query("3_4_count_distinct_approx")
 }
